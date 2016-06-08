@@ -1,0 +1,22 @@
+{
+  "name": "os",
+  "description": "尝试",
+  "main": "index.js",
+  "authors": [
+    "xiehaiyang"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "js/lib",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "vue": "^1.0.24",
+    "bootstrap": "^3.3.6"
+  }
+}

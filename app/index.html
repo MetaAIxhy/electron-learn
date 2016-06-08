@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>webos</title>
+  </head>
+  <body>
+    <h1>todo</h1>
+    <div class="menu">
+        <span>
+            当前文件：
+            <span v-text="menu.filename?menu.filename:'未打开文件'"></span>
+        </span>
+        <a @click="menu_openfile()" href="#">打开</a>
+        <a @click="menu_savefile(menu.filename)" href="#">保存</a>
+        <a @click="menu_savefile()" href="#">另存为</a>
+    </div>
+
+    <table class="todo">
+        <tr>
+            <th>内容</th>
+            <th>时间</th>
+            <th>操作</th>
+        </tr>
+        <template v-for="(index, item) in todo.lists">
+            <tr>
+                <td >
+                    <textarea v-model="item.text"></textarea>
+                </td>
+                <td >
+                    <p v-text="item.time.split(' ')[0]"></p>
+                    <p v-text="item.time.split(' ')[1]"></p>
+                </td>
+                <td>
+                    <a @click="todo_del(item)" href="#">删除</a>
+                </td>
+            </tr>
+        </template>
+        <tr>
+            <td>
+                <input type="text" @keyup.enter="todo_add(todo.input)" v-model="todo.input"/>
+                <a @click="todo_add(todo.input)" href="#">添加</a>
+            </td>
+        </tr>
+    </table>
+    <div class="history">
+        <div v-for="item in history.lists | orderBy 'time' -1">
+            <span v-text="item.action"></span>
+            <span v-text="item.success?'成功':'失败'"></span>
+            <span v-if="item.data.filename" >
+                <a v-text="item.data.filename" @click="menu_openfile(item.data.filename)" href="#"></a>
+            </span>
+            <span v-if="item.data.message" v-text="item.data.message"></span>
+            <span v-text="item.time"></span>
+        </div>
+    </div>
+  <script>
+    // You can also require other files to run in this process
+      require('./renderer.js')
+  </script>
+  </body>
+
+</html>

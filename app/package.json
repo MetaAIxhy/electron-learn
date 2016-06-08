@@ -1,0 +1,8 @@
+{
+  "name": "webos",
+  "version": "1.0.0",
+  "description": "mini os",
+  "main": "main.js",
+  "author": "xiehaiyang",
+  "license": "MIT"
+}
