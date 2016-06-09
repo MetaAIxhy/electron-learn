@@ -22,7 +22,9 @@ $ electron app
 
 ##used
 js: vue v 1.0+, es6
+
 css: bootstrap v3+
+
 tool: bower
 
 ##License
