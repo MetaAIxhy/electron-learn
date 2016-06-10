@@ -1,5 +1,7 @@
 const Vue = require('./res/util/vue/dist/vue.js');
-const { Dialog, File} = require('./api.js');
+const { Dialog, File } = require('./api.js');
+const { divEdit,spanTime } = require('./component.js');
+
 
 class Todo{
     constructor(content, time){
@@ -13,6 +15,10 @@ class Subject{
         this.name = name;
         this.input = "";
         this.todos = [];
+        this.active = true;
+    }
+    select(){
+        this.active = !this.active;
     }
     add(text){
         if(!text){
@@ -80,7 +86,11 @@ class Project {
         this.empty();
         project.subjects.map(subject=>{
             Promise.resolve(this.addSubject(subject.name))
-            .then(s=> subject.todos.map(todo=>s.add(todo.content, todo.time)))
+                .then(s=>{
+                    s.active=subject.active;
+                    return s;
+                })
+                .then(s=> subject.todos.map(todo=>s.add(todo.content, todo.time)))
         });
         return this.path = filename;
     }
@@ -149,6 +159,10 @@ class Project {
             el: el,
             data: {
                 project: this
+            },
+            components: {
+                'div-edit': divEdit,
+                'span-time':spanTime
             }
         });
     }
@@ -161,4 +175,7 @@ class Project {
 }
 
 let project  = new Project({historyPath: "app/last.project"});
-project.init('body');
+vm = project.init('body');
+
+//debug
+window.myApp = {vm}
