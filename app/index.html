@@ -60,11 +60,16 @@
                               <div class="panel-heading">
                                   <div class="form-form-horizontal">
                                       <div class="form-inline">
-                                          <label v-text="subject.name" class="control-label"></label>
-                                          <div class="btn btn-default" style="visibility: hidden">layout</div>
-                                          <div class="pull-right">
-                                              <a @click="subject.empty()" href="javascript:void(0)" class="btn btn-default">清空</a>
-                                              <a @click="project.delSubject(subject)" href="javascript:void(0)" class="btn btn-default">删除</a>
+                                          <div class="row">
+                                              <div class="col-xs-6">
+                                                  <div-edit :content.sync ="subject.name" ></div-edit>
+                                              </div>
+                                              <div class="col-xs-6">
+                                                  <div class="pull-right">
+                                                      <a @click="subject.empty()" href="javascript:void(0)" class="btn btn-default">清空</a>
+                                                      <a @click="project.delSubject(subject)" href="javascript:void(0)" class="btn btn-default">删除</a>
+                                                  </div>
+                                              </div>
                                           </div>
                                       </div>
                                   </div>
@@ -78,7 +83,7 @@
                                   <template v-for="(index, item) in subject.todos">
                                       <tr>
                                           <td >
-                                              <div-edit :content.sync ="item.content"></div-edit>
+                                              <div-edit :content.sync ="item.content" :single="false"></div-edit>
                                           </td>
                                           <td >
                                               <p v-text="item.time"></p>

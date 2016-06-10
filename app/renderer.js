@@ -117,7 +117,8 @@ class Project {
             .then(filename=> File.open(filename))
             .then(({filename, data})=> this.update(filename, data))
             .then(filename=>{
-                File.save(this.historyPath, filename);
+                //use relative path
+                File.save(this.historyPath, File.relativePath(filename));
                 return filename;
             })
             .then(filename=> this.history.log({

@@ -1,3 +1,4 @@
+const path = require('path');
 const fs = require('fs');
 const {dialog} = require('electron').remote;
 
@@ -37,6 +38,9 @@ let Dialog = {
     }
 };
 let File = {
+    relativePath(filename){
+        return path.relative(path.resolve(), filename);
+    },
     exists(filename){
         return new Promise((resolve, reject)=>{
             fs.exists(filename, exists=>exists?

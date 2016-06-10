@@ -1,3 +1,4 @@
+const Vue = require('./res/util/vue/dist/vue.js');
 const divEdit = {
     data() {
         return {
@@ -7,7 +8,15 @@ const divEdit = {
     },
     template: `
                        <div @click="edit()" style="cursor: pointer;">
-                           <textarea class="form-control"
+                       <template v-if="editing">
+                           <input v-if="single"
+                            v-show="editing"
+                           	v-focus="editing"
+                           	v-model="content"
+                            @blur="editDone()"
+                            @keyup.enter="editDone()"
+                            @keyup.esc="editCancel()"/>
+                           <textarea v-else class="form-control"
                             v-show="editing"
                            	v-focus="editing"
                            	v-model="content"
@@ -15,11 +24,17 @@ const divEdit = {
                             @keyup.enter="editDone()"
                             @keyup.esc="editCancel()">
                            </textarea>
-                           <p v-else v-text="content"></p>
+                       </template>
+                           <span v-else v-text="content"></span>
                        </div>`,
     props: {
         content: {
-            type: String
+            type: String,
+            twoWay: true
+        },
+        single: {
+            type: Boolean,
+            default: true
         }
     },
     methods: {
