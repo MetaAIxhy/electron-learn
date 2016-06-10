@@ -8,18 +8,20 @@
     <div class="menu">
         <div class="subject">
             <span>项目</span>
-            <a @click="project_open(project)" href="#">打开</a>
-            <a @click="project_save(project, project.path)" href="#">保存</a>
+            <a @click="project.open()" href="#">打开</a>
+            <a @click="project.new()" href="#">新建</a>
+            <a @click="project.save(project.path)" href="#">保存</a>
             <span v-text="project.path || '未打开文件'"></span>
         </div>
     </div>
-    <div v-for="subject in project.subjects.lists" class="subject">
+    <div v-for="subject in project.subjects" class="subject">
         <div class="head">
             <span>主题：</span>
             <span v-text="subject.name"></span>
-            <a @click="todo_empty(subject)" href="#">清空</a>
-            <input type="text" @keyup.enter="todo_add(subject)" v-model="subject.input"/>
-            <a @click="todo_add(subject)" href="#">添加todo</a>
+            <input type="text" @keyup.enter="subject.add()" v-model="subject.input"/>
+            <a @click="subject.add()" href="#">添加todo</a>
+            <a @click="subject.empty()" href="#">清空</a>
+            <a @click="project.delSubject(subject)" href="#">删除</a>
         </div>
         <div class="body">
             <table>
@@ -38,7 +40,7 @@
                             <p v-text="item.time.split(' ')[1]"></p>
                         </td>
                         <td>
-                            <a @click="todo_del(subject, item)" href="#">删除</a>
+                            <a @click="subject.del(item)" href="#">删除</a>
                         </td>
                     </tr>
                 </template>
@@ -46,21 +48,16 @@
         </div>
     </div>
     <div class="todo">
-        <input type="text" v-model="project.subjects.input"/>
-        <a @click="subject_add(project)" href="#">添加主题</a>
+        <input type="text" @keyup.enter ="project.addSubject()" v-model="project.input"/>
+        <a @click="project.addSubject()" href="#">添加主题</a>
     </div>
     <div class="history">
-        <a @click="history_empty()" href="#">清空历史</a>
-        <!--<div>-->
-            <!--<span>排序</span>-->
-            <!--<a @click="history_sort(-1)" href="#">最近</a>-->
-            <!--<a @click="history_sort(1)" href="#">最远</a>-->
-        <!--</div>-->
-        <div v-for="item in history.lists | orderBy 'time' history.sort" >
+        <a @click="project.history.empty()" href="#">清空历史</a>
+        <div v-for="item in project.history.logs | orderBy 'time' -1" >
             <span v-text="item.action"></span>
             <span v-text="item.success?'成功':'失败'"></span>
             <span v-if="item.action == 'project_open'" >
-                <a v-text="item.data.filename" @click="project_open(project, item.data.filename)" href="#"></a>
+                <a v-text="item.data.filename" @click="project.open(item.data.filename)" href="#"></a>
             </span>
             <span v-if="item.data.error" v-text="item.data.error.message"></span>
             <span v-text="item.time"></span>
