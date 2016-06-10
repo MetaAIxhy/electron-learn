@@ -3,66 +3,122 @@
   <head>
     <meta charset="UTF-8">
     <title>edit</title>
+      <link rel="stylesheet" href="res/css/bootstrap.min.css"/>
   </head>
   <body>
-    <div class="menu">
-        <div class="subject">
-            <span>项目</span>
-            <a @click="project.open()" href="#">打开</a>
-            <a @click="project.new()" href="#">新建</a>
-            <a @click="project.save(project.path)" href="#">保存</a>
-            <span v-text="project.path || '未打开文件'"></span>
+  <div class="container">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <p v-text="project.path || '未打开文件'" class="text-center"></p>
+            </div>
+            <div class="row">
+                <div class="col-xs-6">
+                    <a @click="project.open()" href="javascript:void(0)" class="btn btn-default">打开</a>
+                    <a @click="project.new()" href="javascript:void(0)" class="btn btn-default">新建</a>
+                    <a @click="project.save(project.path)" href="javascript:void(0)" class="btn btn-default" >保存</a>
+                </div>
+                <div class="col-xs-6">
+                    <div class="form-inline pull-right">
+                        <div class="form-group">
+                            <input type="text" @keyup.enter ="project.addSubject()" v-model="project.input" class="form-control"/>
+                            <a @click="project.addSubject()" href="javascript:void(0)" class="btn btn-default">添加主题</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    <div v-for="subject in project.subjects" class="subject">
-        <div class="head">
-            <span>主题：</span>
-            <span v-text="subject.name"></span>
-            <input type="text" @keyup.enter="subject.add()" v-model="subject.input"/>
-            <a @click="subject.add()" href="#">添加todo</a>
-            <a @click="subject.empty()" href="#">清空</a>
-            <a @click="project.delSubject(subject)" href="#">删除</a>
+        <div class="panel-body">
+            <div v-for="subject in project.subjects" class="subject">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <span>主题：</span>
+                                <span v-text="subject.name"></span>
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="pull-right">
+                                    <a @click="subject.empty()" href="javascript:void(0)" class="btn btn-default">清空</a>
+                                    <a @click="project.delSubject(subject)" href="javascript:void(0)" class="btn btn-default">删除</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th>内容</th>
+                                        <th>时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    <template v-for="(index, item) in subject.todos">
+                                        <tr>
+                                            <td >
+                                                <textarea class="form-control" v-model="item.content"></textarea>
+                                            </td>
+                                            <td >
+                                                <p v-text="item.time.split(' ')[0]"></p>
+                                                <p v-text="item.time.split(' ')[1]"></p>
+                                            </td>
+                                            <td>
+                                                <a @click="subject.del(item)" href="javascript:void(0)" class="btn btn-default">删除</a>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-xs-6"> </div>
+                            <div class="col-xs-6">
+                                <div class="form-inline pull-right">
+                                    <div class="form-gourp">
+                                        <input type="text" @keyup.enter="subject.add()" v-model="subject.input" class="form-control"/>
+                                        <a @click="subject.add()" href="javascript:void(0)" class="btn btn-default">添加todo</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="body">
-            <table>
-                <tr>
-                    <th>内容</th>
-                    <th>时间</th>
-                    <th>操作</th>
-                </tr>
-                <template v-for="(index, item) in subject.todos">
-                    <tr>
-                        <td >
-                            <textarea v-model="item.content"></textarea>
-                        </td>
-                        <td >
-                            <p v-text="item.time.split(' ')[0]"></p>
-                            <p v-text="item.time.split(' ')[1]"></p>
-                        </td>
-                        <td>
-                            <a @click="subject.del(item)" href="#">删除</a>
-                        </td>
-                    </tr>
-                </template>
-            </table>
-        </div>
-    </div>
-    <div class="todo">
-        <input type="text" @keyup.enter ="project.addSubject()" v-model="project.input"/>
-        <a @click="project.addSubject()" href="#">添加主题</a>
-    </div>
-    <div class="history">
-        <a @click="project.history.empty()" href="#">清空历史</a>
-        <div v-for="item in project.history.logs | orderBy 'time' -1" >
-            <span v-text="item.action"></span>
-            <span v-text="item.success?'成功':'失败'"></span>
-            <span v-if="item.action == 'project_open'" >
-                <a v-text="item.data.filename" @click="project.open(item.data.filename)" href="#"></a>
-            </span>
-            <span v-if="item.data.error" v-text="item.data.error.message"></span>
-            <span v-text="item.time"></span>
-        </div>
-    </div>
+      </div>
+      <div class="history">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-2">
+                        <span>历史记录</span>
+                    </div>
+                    <div class="col-xs-10">
+                        <div class="pull-right">
+                            <a @click="project.history.empty()" href="javascript:void(0)" class="btn btn-default">清空历史</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="list-group">
+                    <div v-for="item in project.history.logs | orderBy 'time' -1" class="list-group-item">
+                        <span v-text="item.action"></span>
+                        <span v-text="item.success?'成功':'失败'"></span>
+                    <span v-if="item.action == 'project_open'" >
+                        <a v-text="item.data.filename" @click="project.open(item.data.filename)" href="javascript:void(0)"></a>
+                    </span>
+                        <span v-if="item.data.error" v-text="item.data.error.message"></span>
+                        <span v-text="item.time"></span>
+                    </div>
+                </div>
+            </div>
+          </div>
+      </div>
+  </div>
   <script>
     // You can also require other files to run in this process
       require('./renderer.js')
