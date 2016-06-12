@@ -20,12 +20,12 @@ class Subject{
     select(){
         this.active = !this.active;
     }
-    add(text){
+    add(text, time){
         if(!text){
             text = this.input;
             this.input = "";
         }
-        let todo = new Todo(text);
+        let todo = new Todo(text, time);
         this.todos.push(todo);
         return todo;
     }
