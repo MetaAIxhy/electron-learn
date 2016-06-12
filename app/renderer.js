@@ -43,15 +43,16 @@ class Subject{
 class History {
     constructor(){
         this.logs = [];
+        this.logText = "";
     }
     empty(){
         this.logs = [];
     }
     log({action,success, data }){
-        this.logs.push({
-            action, success, data,
-            time: (new Date()).toLocaleString()
-        });
+        let time = (new Date()).toLocaleString();
+        this.logs.push({ action, success, data, time });
+        console.log(action, success, data);
+        this.logText = action + (success?" 成功 ":" 失败 ") + time;
     }
 }
 

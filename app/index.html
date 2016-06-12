@@ -7,148 +7,142 @@
       <link rel="stylesheet" href="res/css/style.css"/>
   </head>
   <body>
-  <div class="sidebar">
-      <div class="container-fluid">
-          <div class="row">
-              <div class="panel panel-default">
-                  <div class="panel-heading">
-                      <p>主题列表</p>
-                  </div>
-                  <div class="list-group">
-                      <div v-for="subject in project.subjects" class="list-group-item">
-                          <input type="checkbox" v-model="subject.active"/>
-                          <a href="javascript:void(0)" @click="subject.select()" v-text="subject.name"></a>
-                          <div class="pull-right">
-                              <a @click="project.delSubject(subject)" href="javascript:void(0)" class="btn btn-default btn-xs">删除</a>
+  <div class="container min-full">
+      <div class="main">
+          <div class="sidebar">
+              <div class="warp">
+                  <div class="panel panel-default">
+                      <div class="panel-heading">
+                          <span> 文件列表 </span>
+                      </div>
+                      <div class="list-group">
+                          <div class="list-group-item">
+                              <a v-text="project.path || '未打开文件'" class="text-center" href="javascript:void(0)"></a>
+                          </div>
+                          <div class="list-group-item">
+
+                              <a @click="project.open()" href="javascript:void(0)" class="btn btn-default btn-xs">打开</a>
+                              <a @click="project.new()" href="javascript:void(0)" class="btn btn-default btn-xs">新建</a>
+                              <a @click="project.save(project.path)" href="javascript:void(0)" class="btn btn-default btn-xs" >保存</a>
                           </div>
                       </div>
-                      <div class="list-group-item">
-                          <div class="row">
-                              <div class="col-xs-12">
-                                  <input type="text" @keyup.enter ="project.addSubject()" v-model="project.input" class="form-control"/>
-                              </div>
-                          </div>
+                    </div>
+                  <div class="panel panel-default">
+                      <div class="panel-heading">
+                          <span>主题列表</span>
                       </div>
-                      <div class="list-group-item">
-                          <div class="row">
-                              <div class="col-xs-12">
-                                  <a @click="project.addSubject()" href="javascript:void(0)" class="btn btn-default">添加主题</a>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-              <div class="panel panel-default">
-                  <div class="panel-heading">
-                      <div class="row">
-                          <div class="col-xs-12">
-                              <span>历史记录</span>
+                      <div class="list-group">
+                          <div v-for="subject in project.subjects" class="list-group-item">
+                              <input type="checkbox" v-model="subject.active"/>
+                              <a href="javascript:void(0)" @click="subject.select()" v-text="subject.name"></a>
                               <div class="pull-right">
-                                  <a @click="project.history.empty()" href="javascript:void(0)" class="btn btn-default">清空历史</a>
+                                  <a @click="project.delSubject(subject)" href="javascript:void(0)" class="btn btn-default btn-xs">删除</a>
+                              </div>
+                          </div>
+                          <div class="list-group-item">
+                              <div class="row">
+                                  <div class="col-xs-12">
+                                      <input type="text" @keyup.enter ="project.addSubject()" v-model="project.input" class="form-control"/>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="list-group-item">
+                              <div class="row">
+                                  <div class="col-xs-12">
+                                      <a @click="project.addSubject()" href="javascript:void(0)" class="btn btn-default">添加主题</a>
+                                  </div>
                               </div>
                           </div>
                       </div>
                   </div>
-                  <div class="list-group">
-                      <div v-for="item in project.history.logs | orderBy 'time' -1" class="list-group-item">
-                          <span v-text="item.action"></span>
-                          <span v-text="item.success?'成功':'失败'"></span>
-                                <span v-if="item.action == 'project_open'" >
-                                    <a v-text="item.data.filename" @click="project.open(item.data.filename)" href="javascript:void(0)"></a>
-                                </span>
-                          <span v-if="item.data.error" v-text="item.data.error.message"></span>
-                          <span v-text="item.time"></span>
-                      </div>
-                  </div>
+                  <!--<div class="panel panel-default">-->
+                      <!--<div class="panel-heading">-->
+                          <!--<div class="row">-->
+                              <!--<div class="col-xs-12">-->
+                                  <!--<span>历史记录</span>-->
+                                  <!--<div class="pull-right">-->
+                                      <!--<a @click="project.history.empty()" href="javascript:void(0)" class="btn btn-default">清空历史</a>-->
+                                  <!--</div>-->
+                              <!--</div>-->
+                          <!--</div>-->
+                      <!--</div>-->
+                      <!--<div class="list-group">-->
+                          <!--<div v-for="item in project.history.logs | orderBy 'time' -1" class="list-group-item">-->
+                              <!--<span v-text="item.action"></span>-->
+                              <!--<span v-text="item.success?'成功':'失败'"></span>-->
+                                <!--<span v-if="item.action == 'project_open'" >-->
+                                    <!--<a v-text="item.data.filename" @click="project.open(item.data.filename)" href="javascript:void(0)"></a>-->
+                                <!--</span>-->
+                              <!--<span v-if="item.data.error" v-text="item.data.error.message"></span>-->
+                              <!--<span v-text="item.time"></span>-->
+                          <!--</div>-->
+                      <!--</div>-->
+                  <!--</div>-->
               </div>
           </div>
-      </div>
-  </div>
-  <div class="main">
-      <div class="container full-768">
           <div class="row">
-              <div class="panel panel-default">
-                  <div class="panel-heading">
-                      <div class="row">
-                          <p v-text="project.path || '未打开文件'" class="text-center"></p>
-                      </div>
-                      <div class="row">
-                          <div class="col-xs-6">
-                              <a @click="project.open()" href="javascript:void(0)" class="btn btn-default">打开</a>
-                              <a @click="project.new()" href="javascript:void(0)" class="btn btn-default">新建</a>
-                              <a @click="project.save(project.path)" href="javascript:void(0)" class="btn btn-default" >保存</a>
-                          </div>
-                          <div class="col-xs-6">
-                          </div>
-                      </div>
-                  </div>
-                  <div class="panel-body">
-                      <div class="row">
-                          <div class="col-xs-12">
-                              <div v-for="subject in project.subjects " v-if="subject.active">
-                                  <div class="panel panel-default">
-                                      <div class="panel-heading">
-                                          <div class="form-form-horizontal">
-                                              <div class="form-inline">
-                                                  <div class="row">
-                                                      <div class="col-xs-6">
-                                                          <div-edit :content.sync ="subject.name" ></div-edit>
-                                                      </div>
-                                                      <div class="col-xs-6">
-                                                          <div class="pull-right">
-                                                              <a @click="subject.empty()" href="javascript:void(0)" class="btn btn-default">清空</a>
-                                                              <a @click="project.delSubject(subject)" href="javascript:void(0)" class="btn btn-default">删除</a>
-                                                          </div>
-                                                      </div>
-                                                  </div>
-                                              </div>
-                                          </div>
+              <ul class="nav nav-tabs">
+                  <li v-for="subject in project.subjects" v-if="subject.active" :class="{active: subject.show}">
+                      <a @click="subject.select()" v-text="subject.name" href="#"></a>
+                  </li>
+              </ul>
+              <div v-for="subject in project.subjects " v-if="subject.active">
+                  <div class="panel panel-default">
+                      <div class="panel-heading">
+                          <div class="form-form-horizontal">
+                              <div class="form-inline">
+                                  <div class="row">
+                                      <div class="col-xs-6">
+                                          <div-edit :content.sync ="subject.name" ></div-edit>
                                       </div>
-                                      <table class="table table-condensed table-bordered">
-                                          <tr>
-                                              <th>内容</th>
-                                              <th>时间</th>
-                                              <th>操作</th>
-                                          </tr>
-                                          <template v-for="(index, item) in subject.todos">
-                                              <tr>
-                                                  <td >
-                                                      <div-edit :content.sync ="item.content" :single="false"></div-edit>
-                                                  </td>
-                                                  <td >
-                                                      <p v-text="item.time"></p>
-                                                  </td>
-                                                  <td>
-                                                      <a @click="subject.del(item)" href="javascript:void(0)" class="btn btn-default">删除</a>
-                                                  </td>
-                                              </tr>
-                                          </template>
-                                      </table>
-                                      <div class="panel-footer">
-                                          <div class="form-inline">
-                                              <div class="form-group">
-                                                  <input type="text" @keyup.enter="subject.add()" v-model="subject.input" class="form-control"/>
-                                                  <a @click="subject.add()" href="javascript:void(0)" class="btn btn-default">添加todo</a>
-                                              </div>
+                                      <div class="col-xs-6">
+                                          <div class="pull-right">
+                                              <a @click="subject.empty()" href="javascript:void(0)" class="btn btn-default btn-xs">清空</a>
+                                              <a @click="project.delSubject(subject)" href="javascript:void(0)" class="btn btn-default btn-xs">删除</a>
                                           </div>
                                       </div>
                                   </div>
                               </div>
                           </div>
                       </div>
-                  </div>
-                  <div class="panel-footer">
+                      <table class="table table-condensed table-bordered">
+                          <tr>
+                              <th>内容</th>
+                              <th>时间</th>
+                              <th>操作</th>
+                          </tr>
+                          <template v-for="(index, item) in subject.todos">
+                              <tr>
+                                  <td >
+                                      <div-edit :content.sync ="item.content" :single="false"></div-edit>
+                                  </td>
+                                  <td >
+                                      <p v-text="item.time"></p>
+                                  </td>
+                                  <td>
+                                      <a @click="subject.del(item)" href="javascript:void(0)" class="btn btn-default">删除</a>
+                                  </td>
+                              </tr>
+                          </template>
+                      </table>
+                      <div class="panel-footer">
+                          <div class="form-inline">
+                              <div class="form-group">
+                                  <input type="text" @keyup.enter="subject.add()" v-model="subject.input" class="form-control"/>
+                                  <a @click="subject.add()" href="javascript:void(0)" class="btn btn-default">添加todo</a>
+                              </div>
+                          </div>
+                      </div>
                   </div>
               </div>
+          </div>
           </div>
       </div>
   </div>
   <div class="footer">
       <div class="row">
           <div class="col-xs-12">
-              <div v-for="subject in project.subjects" v-if="subject.active" class="warp">
-                  <div v-text="subject.name" class="btn btn-default btn-primary"></div>
-              </div>
+              <span v-text="project.history.logText"></span>
               <div class="pull-right">
                   <span-time></span-time>
               </div>

@@ -1,22 +1,28 @@
 /*bootstarp reset*/
-@media (min-width: 768px){
-    .full-768{
+@media (max-width: 945px){
+    .min-full{
         width: 100%!important;
     }
 }
 
+.main{
+    position: relative;
+    padding-left: 225px;
+}
+
 .sidebar{
-    position: fixed;
+    position: absolute;
     left: 0;
     top: 0;
-    width: 225px;
+}
+.sidebar .warp{
+    position: fixed;
+    top: 0;
+    margin-left: -15px;
+    width: 215px;
     height: 100vh;
     padding-bottom: 40px;
     overflow: auto;
-}
-
-.main{
-    margin-left: 225px;
 }
 
 .footer{
