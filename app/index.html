@@ -138,6 +138,9 @@
   <div class="footer">
       <div class="row">
           <div class="col-xs-12">
+              <div v-for="subject in project.subjects" v-if="subject.active" class="warp">
+                  <div v-text="subject.name" class="btn btn-default btn-primary"></div>
+              </div>
               <div class="pull-right">
                   <span-time></span-time>
               </div>
