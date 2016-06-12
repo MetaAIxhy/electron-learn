@@ -1,0 +1,18 @@
+/*bootstarp reset*/
+@media (min-width: 768px){
+    .full-768{
+        width: 100%!important;
+    }
+}
+
+.footer{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px 15px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
