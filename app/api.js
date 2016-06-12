@@ -67,5 +67,16 @@ let File = {
             resolve(filename);
         });
     }
+};
+
+let Storage = {
+    key: "project-cache",
+    fetch(){
+        return JSON.parse(localStorage.getItem(this.key) || '{}');
+    },
+    save(obj){
+        localStorage.setItem(this.key, JSON.stringify(obj));
+    }
 }
-module.exports = { Dialog, File }
+
+module.exports = { Dialog, File ,Storage}

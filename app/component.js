@@ -8,29 +8,22 @@ const divEdit = {
     },
     template: `
                        <div @click="edit()" style="cursor: pointer;">
-                       <template v-if="editing">
-                           <input v-if="single"
-                            v-show="editing"
+                           <input v-show="single && editing" class="form-control"
                            	v-focus="editing"
                            	v-model="content"
-                            @blur="editDone()"
-                            @keyup.enter="editDone()"
-                            @keyup.esc="editCancel()"/>
-                           <textarea v-else class="form-control"
-                            v-show="editing"
+                            @blur="done()"
+                            @keyup.esc="done()"/>
+                           <textarea v-show="!single && editing" class="form-control"
                            	v-focus="editing"
                            	v-model="content"
-                            @blur="editDone()"
-                            @keyup.enter="editDone()"
-                            @keyup.esc="editCancel()">
+                            @blur="done()"
+                            @keyup.esc="done()">
                            </textarea>
-                       </template>
-                           <span v-else v-text="content"></span>
+                           <span v-if="!editing" v-text="content"></span>
                        </div>`,
     props: {
         content: {
-            type: String,
-            twoWay: true
+            type: String
         },
         single: {
             type: Boolean,
@@ -42,11 +35,11 @@ const divEdit = {
             this.editing = true;
             this.editCache = this.content;
         },
-        editCancel(){
+        cancel(){
             this.editing = false;
-            this.content = this.editCache;
+            this.content = this.editcache;
         },
-        editDone(){
+        done(){
             this.editing = false;
         }
     },

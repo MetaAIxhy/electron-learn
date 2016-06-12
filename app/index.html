@@ -53,6 +53,29 @@
                               </div>
                           </div>
                       </div>
+                      <div class="panel panel-default">
+                          <div class="panel-heading">
+                              <div class="row">
+                                  <div class="col-xs-12">
+                                      <span>历史记录</span>
+                                      <div class="pull-right">
+                                          <a @click="project.history.empty()" href="javascript:void(0)" class="btn btn-default">清空历史</a>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="list-group">
+                              <div v-for="item in project.history.logs | orderBy 'time' -1" class="list-group-item">
+                                  <span v-text="item.action"></span>
+                                  <span v-text="item.success?'成功':'失败'"></span>
+                                <span v-if="item.action == 'project_open'" >
+                                    <a v-text="item.data.filename" @click="project.open(item.data.filename)" href="javascript:void(0)"></a>
+                                </span>
+                                  <span v-if="item.data.error" v-text="item.data.error.message"></span>
+                                  <span v-text="item.time"></span>
+                              </div>
+                          </div>
+                      </div>
                   </div>
                   <div class="col-xs-9">
                       <div v-for="subject in project.subjects " v-if="subject.active">
@@ -103,29 +126,6 @@
                                   </div>
                               </div>
                           </div>
-                      </div>
-                  </div>
-              </div>
-              <div class="panel panel-default">
-                  <div class="panel-heading">
-                      <div class="row">
-                          <div class="col-xs-12">
-                              <span>历史记录</span>
-                              <div class="pull-right">
-                                  <a @click="project.history.empty()" href="javascript:void(0)" class="btn btn-default">清空历史</a>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="list-group">
-                      <div v-for="item in project.history.logs | orderBy 'time' -1" class="list-group-item">
-                          <span v-text="item.action"></span>
-                          <span v-text="item.success?'成功':'失败'"></span>
-                                <span v-if="item.action == 'project_open'" >
-                                    <a v-text="item.data.filename" @click="project.open(item.data.filename)" href="javascript:void(0)"></a>
-                                </span>
-                          <span v-if="item.data.error" v-text="item.data.error.message"></span>
-                          <span v-text="item.time"></span>
                       </div>
                   </div>
               </div>

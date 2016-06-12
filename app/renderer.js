@@ -1,5 +1,5 @@
 const Vue = require('./res/util/vue/dist/vue.js');
-const { Dialog, File } = require('./api.js');
+const { Dialog, File, Storage } = require('./api.js');
 const { divEdit,spanTime } = require('./component.js');
 
 
@@ -81,8 +81,8 @@ class Project {
     empty(){
         return this.subjects = [];
     }
-    update(filename, json){
-        let project = JSON.parse(json);
+    update(filename, project){
+        console.log(filename, project);
         this.empty();
         project.subjects.map(subject=>{
             Promise.resolve(this.addSubject(subject.name))
@@ -115,7 +115,7 @@ class Project {
     open(filename){
         return Promise.resolve(filename ? filename : Dialog.showOpenDialog())
             .then(filename=> File.open(filename))
-            .then(({filename, data})=> this.update(filename, data))
+            .then(({filename, data})=> this.update(filename, JSON.parse(data)))
             .then(filename=>{
                 //use relative path
                 File.save(this.historyPath, File.relativePath(filename));
@@ -138,7 +138,7 @@ class Project {
         this.empty();
         this.path = "";
     }
-    load(){
+    loadFile(){
         Promise.resolve(this.historyPath)
             .then(cf=>File.exists(cf))
             .then(cf=>File.open(cf))
@@ -155,28 +155,55 @@ class Project {
             }))
         ;
     }
-    render(el){
-        return new Vue({
-            el: el,
-            data: {
-                project: this
-            },
-            components: {
-                'div-edit': divEdit,
-                'span-time':spanTime
-            }
-        });
-    }
-    init(el){
-        var vm = this.render(el);
-        // load last project
-        this.load();
-        return vm;
+    loadStorage(){
+        console.log(Storage.fetch());
+        Promise.resolve(Storage.fetch())
+            .then(({filename, data})=> this.update(filename, data))
+            .then(filename=>{
+                //use relative path
+                File.save(this.historyPath, File.relativePath(filename));
+                return filename;
+            })
+            .then(filename=> this.history.log({
+                action: "project-open",
+                success: true,
+                data: {filename}
+            }))
+            .catch(error=> {
+                this.history.log({
+                    action: "project-open",
+                    success: false,
+                    data: {error}
+                });
+            });
     }
 }
 
 let project  = new Project({historyPath: "app/last.project"});
-vm = project.init('body');
+let vm = new Vue({
+    el: 'body',
+    data: {
+        project: project
+    },
+    components: {
+        'div-edit': divEdit,
+        'span-time':spanTime
+    },
+    watch: {
+        project: {
+            handler: function (project) {
+                Storage.save({
+                    filename: project.path,
+                    data:{
+                        subjects: project.subjects
+                    }});
+            },
+            deep: true
+        }
+    }
+});
+project.loadStorage();
+//project.loadFile();
 
 //debug
 window.myApp = {vm}
