@@ -5,6 +5,20 @@
     }
 }
 
+.sidebar{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 225px;
+    height: 100vh;
+    padding-bottom: 40px;
+    overflow: auto;
+}
+
+.main{
+    margin-left: 225px;
+}
+
 .footer{
     position: fixed;
     bottom: 0;
