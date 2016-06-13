@@ -81,11 +81,11 @@
               </div>
           </div>
           <div class="row">
-              <ul class="nav nav-tabs">
-                  <li v-for="subject in project.subjects" v-if="subject.active" :class="{active: subject.show}">
-                      <a @click="subject.select()" v-text="subject.name" href="#"></a>
-                  </li>
-              </ul>
+              <!--<ul class="nav nav-tabs">-->
+                  <!--<li v-for="subject in project.subjects" v-if="subject.active" :class="{active: subject.show}">-->
+                      <!--<a @click="subject.select()" v-text="subject.name" href="#"></a>-->
+                  <!--</li>-->
+              <!--</ul>-->
               <div v-for="subject in project.subjects " v-if="subject.active">
                   <div class="panel panel-default">
                       <div class="panel-heading">
@@ -97,8 +97,19 @@
                                       </div>
                                       <div class="col-xs-6">
                                           <div class="pull-right">
-                                              <a @click="subject.empty()" href="javascript:void(0)" class="btn btn-default btn-xs">清空</a>
-                                              <a @click="project.delSubject(subject)" href="javascript:void(0)" class="btn btn-default btn-xs">删除</a>
+                                              <select name="limit" v-model="subject.limit" number>
+                                                  <option value=5>5</option>
+                                                  <option value=10>10</option>
+                                                  <option value=15>15</option>
+                                                  <option value=30>30</option>
+                                                  <option value=50>50</option>
+                                              </select>
+                                              <a @click="subject.empty()"
+                                                 href="javascript:void(0)"
+                                                 class="btn btn-default btn-xs">清空</a>
+                                              <a @click="project.delSubject(subject)"
+                                                 href="javascript:void(0)"
+                                                 class="btn btn-default btn-xs">删除</a>
                                           </div>
                                       </div>
                                   </div>
@@ -111,12 +122,15 @@
                               <th>时间</th>
                               <th>操作</th>
                           </tr>
-                          <template v-for="(index, item) in subject.todos">
+                          <template v-for="(index, item) in subject.todos
+                                            | orderBy 'time' -1
+                                            | limitBy subject.limit subject.offset
+                          ">
                               <tr>
                                   <td >
                                       <div-edit :content.sync ="item.content" :single="false"></div-edit>
                                   </td>
-                                  <td >
+                                  <td width=170>
                                       <p v-text="item.time"></p>
                                   </td>
                                   <td>
@@ -130,6 +144,12 @@
                               <div class="form-group">
                                   <input type="text" @keyup.enter="subject.add()" v-model="subject.input" class="form-control"/>
                                   <a @click="subject.add()" href="javascript:void(0)" class="btn btn-default">添加todo</a>
+                              </div>
+                              <div class="pull-right">
+                                  <ui-paging :all="subject.todos.length"
+                                             :limit="subject.limit"
+                                             :offset.sync="subject.offset"
+                                  </ui-paging>
                               </div>
                           </div>
                       </div>
@@ -149,6 +169,41 @@
           </div>
       </div>
   </div>
+  <script type="vue-template" id="div-edit">
+      <div @click="edit()" style="cursor: pointer;">
+          <input v-show="single && editing" class="form-control"
+                 v-focus="editing"
+                 v-model="content"
+                 @blur="done()"
+                 @keyup.esc="done()"/>
+          <textarea v-show="!single && editing" class="form-control"
+                    v-focus="editing"
+                    v-model="content"
+                    @blur="done()"
+                    @keyup.esc="done()">
+          </textarea>
+          <span v-if="!editing" v-text="content"></span>
+      </div>
+  </script>
+
+  <script type="vue-template" id="ui-paging">
+      <ul class="pagination">
+          <span v-text="'共'+ all +'项'" class="btn" disabled="disabled"></span>
+          <li :class="canLast?'':'disabled'">
+              <a @click="last" href="javascript:void(0)" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+              </a>
+          </li>
+          <li v-for="number in page" :class="number==pageNum?'active':''" >
+              <a @click="setPage(number)" v-text="number" href="javascript:void(0)"></a>
+          </li>
+          <li :class="{'disabled':!canNext}">
+              <a @click="next" href="javascript:void(0)" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+              </a>
+          </li>
+      </ul>
+  </script>
   <script>
     // You can also require other files to run in this process
       require('./renderer.js')

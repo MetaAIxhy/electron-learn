@@ -5,9 +5,15 @@
     }
 }
 
+ul.pagination{
+    margin: 0;
+}
+
+/*layout*/
 .main{
     position: relative;
     padding-left: 225px;
+    padding-bottom: 40px;
 }
 
 .sidebar{

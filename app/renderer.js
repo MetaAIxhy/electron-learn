@@ -1,6 +1,6 @@
 const Vue = require('./res/util/vue/dist/vue.js');
 const { Dialog, File, Storage } = require('./api.js');
-const { divEdit,spanTime } = require('./component.js');
+const { divEdit, spanTime, uiPaging } = require('./component.js');
 
 
 class Todo{
@@ -16,9 +16,15 @@ class Subject{
         this.input = "";
         this.todos = [];
         this.active = true;
+        this.offset = 0;
+        this.limit = 5;
     }
     select(){
         this.active = !this.active;
+    }
+    update(subject){
+        this.active=subject.active;
+        subject.todos.map(todo=>this.add(todo.content, todo.time))
     }
     add(text, time){
         if(!text){
@@ -85,14 +91,7 @@ class Project {
     update(filename, project){
         console.log(filename, project);
         this.empty();
-        project.subjects.map(subject=>{
-            Promise.resolve(this.addSubject(subject.name))
-                .then(s=>{
-                    s.active=subject.active;
-                    return s;
-                })
-                .then(s=> subject.todos.map(todo=>s.add(todo.content, todo.time)))
-        });
+        project.subjects.map(subject=>this.addSubject(subject.name).update(subject));
         return this.path = filename;
     }
     save(filename){
@@ -188,7 +187,8 @@ let vm = new Vue({
     },
     components: {
         'div-edit': divEdit,
-        'span-time':spanTime
+        'span-time': spanTime,
+        'ui-paging': uiPaging
     },
     watch: {
         project: {

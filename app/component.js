@@ -6,21 +6,7 @@ const divEdit = {
             editCache: ""
         }
     },
-    template: `
-                       <div @click="edit()" style="cursor: pointer;">
-                           <input v-show="single && editing" class="form-control"
-                           	v-focus="editing"
-                           	v-model="content"
-                            @blur="done()"
-                            @keyup.esc="done()"/>
-                           <textarea v-show="!single && editing" class="form-control"
-                           	v-focus="editing"
-                           	v-model="content"
-                            @blur="done()"
-                            @keyup.esc="done()">
-                           </textarea>
-                           <span v-if="!editing" v-text="content"></span>
-                       </div>`,
+    template: "#div-edit",
     props: {
         content: {
             type: String
@@ -55,7 +41,6 @@ const divEdit = {
         }
     }
 }
-
 const spanTime = {
     data(){
         return {
@@ -73,4 +58,57 @@ const spanTime = {
         window.setInterval(this.update, 1000);
     }
 }
-module.exports = { divEdit, spanTime }
+
+const uiPaging = {
+    props:{
+        all: {
+            type: Number,
+            required: true
+        },
+        limit: {
+            type: Number,
+            default: 5
+        },
+        offset: {
+            type: Number,
+            default: 0
+        }
+    },
+    template: "#ui-paging",
+    computed: {
+        pageNum(){
+            return ((o, l)=>Math.ceil((o+1)/l))(this.offset, this.limit);
+        },
+        page(){
+            let res = [], max = 5,  per = this.limit, all = this.all;;
+            let n = Math.max(1, this.pageNum - max + 1);
+            while( n * per < all + per && max-- ) res.push(n++);
+            return res;
+        },
+        canLast(){
+            return this.pageNum > 1;
+        },
+        canNext(){
+            return this.pageNum*this.limit<this.all;
+        }
+    },
+    watch: {
+        all(all){
+            if(this.offset >= all) this.last() ;
+        }
+    },
+    methods: {
+        last(){
+            if(this.canLast) this.offset -= this.limit;
+        },
+        setPage(num){
+            this.offset = (num-1)*this.limit;
+        },
+        next(){
+            if(this.canNext) this.offset += this.limit;
+        }
+
+    }
+}
+
+module.exports = { divEdit, spanTime, uiPaging }
