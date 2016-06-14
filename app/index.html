@@ -55,105 +55,11 @@
                           </div>
                       </div>
                   </div>
-                  <!--<div class="panel panel-default">-->
-                      <!--<div class="panel-heading">-->
-                          <!--<div class="row">-->
-                              <!--<div class="col-xs-12">-->
-                                  <!--<span>历史记录</span>-->
-                                  <!--<div class="pull-right">-->
-                                      <!--<a @click="project.history.empty()" href="javascript:void(0)" class="btn btn-default">清空历史</a>-->
-                                  <!--</div>-->
-                              <!--</div>-->
-                          <!--</div>-->
-                      <!--</div>-->
-                      <!--<div class="list-group">-->
-                          <!--<div v-for="item in project.history.logs | orderBy 'time' -1" class="list-group-item">-->
-                              <!--<span v-text="item.action"></span>-->
-                              <!--<span v-text="item.success?'成功':'失败'"></span>-->
-                                <!--<span v-if="item.action == 'project_open'" >-->
-                                    <!--<a v-text="item.data.filename" @click="project.open(item.data.filename)" href="javascript:void(0)"></a>-->
-                                <!--</span>-->
-                              <!--<span v-if="item.data.error" v-text="item.data.error.message"></span>-->
-                              <!--<span v-text="item.time"></span>-->
-                          <!--</div>-->
-                      <!--</div>-->
-                  <!--</div>-->
               </div>
           </div>
           <div class="row">
-              <!--<ul class="nav nav-tabs">-->
-                  <!--<li v-for="subject in project.subjects" v-if="subject.active" :class="{active: subject.show}">-->
-                      <!--<a @click="subject.select()" v-text="subject.name" href="#"></a>-->
-                  <!--</li>-->
-              <!--</ul>-->
               <div v-for="subject in project.subjects " v-if="subject.active">
-                  <div class="panel panel-default">
-                      <div class="panel-heading">
-                          <div class="form-form-horizontal">
-                              <div class="form-inline">
-                                  <div class="row">
-                                      <div class="col-xs-6">
-                                          <div-edit :content.sync ="subject.name" ></div-edit>
-                                      </div>
-                                      <div class="col-xs-6">
-                                          <div class="pull-right">
-                                              <select name="limit" v-model="subject.limit" number>
-                                                  <option value=5>5</option>
-                                                  <option value=10>10</option>
-                                                  <option value=15>15</option>
-                                                  <option value=30>30</option>
-                                                  <option value=50>50</option>
-                                              </select>
-                                              <a @click="subject.empty()"
-                                                 href="javascript:void(0)"
-                                                 class="btn btn-default btn-xs">清空</a>
-                                              <a @click="project.delSubject(subject)"
-                                                 href="javascript:void(0)"
-                                                 class="btn btn-default btn-xs">删除</a>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                      <table class="table table-condensed table-bordered">
-                          <tr>
-                              <th>内容</th>
-                              <th>时间</th>
-                              <th>操作</th>
-                          </tr>
-                          <template v-for="(index, item) in subject.todos
-                                            | orderBy 'time' -1
-                                            | limitBy subject.limit subject.offset
-                          ">
-                              <tr>
-                                  <td >
-                                      <div-edit :content.sync ="item.content" :single="false"></div-edit>
-                                  </td>
-                                  <td width=170>
-                                      <p v-text="item.time"></p>
-                                  </td>
-                                  <td>
-                                      <a @click="subject.del(item)" href="javascript:void(0)" class="btn btn-default">删除</a>
-                                  </td>
-                              </tr>
-                          </template>
-                      </table>
-                      <div class="panel-footer">
-                          <div class="form-inline">
-                              <div class="form-group">
-                                  <input type="text" @keyup.enter="subject.add()" v-model="subject.input" class="form-control"/>
-                                  <a @click="subject.add()" href="javascript:void(0)" class="btn btn-default">添加todo</a>
-                              </div>
-                              <div class="pull-right">
-                                  <ui-paging :all="subject.todos.length"
-                                             :limit="subject.limit"
-                                             :offset.sync="subject.offset"
-                                  </ui-paging>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
+                  <view-subject :subject="subject"></view-subject>
               </div>
           </div>
           </div>
@@ -185,7 +91,75 @@
           <span v-if="!editing" v-text="content"></span>
       </div>
   </script>
-
+  <script type="vue-template" id="view-subject">
+      <div class="panel panel-default">
+          <div class="panel-heading">
+              <div class="form-form-horizontal">
+                  <div class="form-inline">
+                      <div class="row">
+                          <div class="col-xs-6">
+                              <div-edit :content.sync ="subject.name" ></div-edit>
+                          </div>
+                          <div class="col-xs-6">
+                              <div class="pull-right">
+                                  <a href="javascript:void(0)">
+                                      <span @click="changeSort"
+                                            class="glyphicon"
+                                            :class="asc?'glyphicon-arrow-up':'glyphicon-arrow-down'"
+                                            aria-hidden="true"></span>
+                                  </a>
+                                  <select name="limit" v-model="limit" number>
+                                      <option value=5>5</option>
+                                      <option value=10>10</option>
+                                      <option value=15>15</option>
+                                      <option value=30>30</option>
+                                      <option value=50>50</option>
+                                  </select>
+                                  <a @click="subject.empty()"
+                                     href="javascript:void(0)"
+                                     class="btn btn-default btn-xs">清空</a>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <table class="table table-condensed table-bordered">
+              <tr>
+                  <th>内容</th>
+                  <th>时间</th>
+                  <th>操作</th>
+              </tr>
+              <template v-for="(index, item) in list">
+                  <tr>
+                      <td >
+                          <div-edit :content.sync ="item.content" :single="false"></div-edit>
+                      </td>
+                      <td width=170>
+                          <p v-text="item.time"></p>
+                      </td>
+                      <td>
+                          <a @click="subject.del(item)" href="javascript:void(0)" class="btn btn-default">删除</a>
+                      </td>
+                  </tr>
+              </template>
+          </table>
+          <div class="panel-footer">
+              <div class="form-inline">
+                  <div class="form-group">
+                      <input type="text" @keyup.enter="subject.add()" v-model="subject.input" class="form-control"/>
+                      <a @click="subject.add()" href="javascript:void(0)" class="btn btn-default">添加</a>
+                  </div>
+                  <div class="pull-right">
+                      <ui-paging :all="subject.todos.length"
+                                 :limit="limit"
+                                 :offset.sync="offset">
+                      </ui-paging>
+                  </div>
+              </div>
+          </div>
+      </div
+  </script>
   <script type="vue-template" id="ui-paging">
       <ul class="pagination">
           <span v-text="'共'+ all +'项'" class="btn" disabled="disabled"></span>
@@ -204,6 +178,7 @@
           </li>
       </ul>
   </script>
+
   <script>
     // You can also require other files to run in this process
       require('./renderer.js')

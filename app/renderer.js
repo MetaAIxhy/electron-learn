@@ -1,7 +1,7 @@
 const Vue = require('./res/util/vue/dist/vue.js');
 const { Dialog, File, Storage } = require('./api.js');
 const { divEdit, spanTime, uiPaging } = require('./component.js');
-
+const { viewSubject } = require('./view/subject.js');
 
 class Todo{
     constructor(content, time){
@@ -16,8 +16,6 @@ class Subject{
         this.input = "";
         this.todos = [];
         this.active = true;
-        this.offset = 0;
-        this.limit = 5;
     }
     select(){
         this.active = !this.active;
@@ -188,7 +186,8 @@ let vm = new Vue({
     components: {
         'div-edit': divEdit,
         'span-time': spanTime,
-        'ui-paging': uiPaging
+        'ui-paging': uiPaging,
+        'view-subject': viewSubject
     },
     watch: {
         project: {
