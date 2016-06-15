@@ -1,10 +1,10 @@
-const { divEdit, spanTime, uiPaging } = require('../component.js');
+const { divEdit, spanTime, uiPaging, mDropdown } = require('../component.js');
 const viewSubject  = {
     data(){
         return {
             offset: 0,
             limit: 5,
-            asc: true
+            asc: false
         }
     },
     props:{
@@ -21,14 +21,15 @@ const viewSubject  = {
         }
     },
     methods: {
-      changeSort(){
-          this.asc = !this.asc;
-      }
+        changeSort(){
+            this.asc = !this.asc;
+        }
     },
     template: "#view-subject",
     components: {
         'div-edit': divEdit,
         'ui-paging': uiPaging,
+        'm-dropdown': mDropdown
     },
 }
 

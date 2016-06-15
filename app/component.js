@@ -58,7 +58,29 @@ const spanTime = {
         window.setInterval(this.update, 1000);
     }
 }
-
+const mDropdown = {
+    data(){
+      return {
+          menuOpened: false,
+          menuOuted: true,
+      }
+    },
+    methods: {
+        menuOpen(){
+            this.menuOpened = true;
+        },
+        menuEnter(){
+            this.menuOuted = false;
+        },
+        menuOut(){
+            this.menuOuted = true;
+        },
+        menuLeave(){
+            if(this.menuOuted) this.menuOpened = false;
+        }
+    },
+    template: "#m-dropdown"
+}
 const uiPaging = {
     props:{
         all: {
@@ -111,4 +133,4 @@ const uiPaging = {
     }
 }
 
-module.exports = { divEdit, spanTime, uiPaging }
+module.exports = { divEdit, spanTime, uiPaging, mDropdown }

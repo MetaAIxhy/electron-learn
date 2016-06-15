@@ -91,6 +91,22 @@
           <span v-if="!editing" v-text="content"></span>
       </div>
   </script>
+  <script type="vue-template" id="m-dropdown">
+      <div class="btn-group"
+           @mouseenter="menuOpen"
+           @mouseLeave="menuLeave | debounce 100"
+           :class="menuOpened?'open':''">
+          <button class="btn btn-default btn-xs dropdown-toggle" type="button">
+              <slot name="head">select</slot>
+              <span class="caret"></span>
+          </button>
+          <ul @mouseenter="menuEnter"
+              @mouseLeave="menuOut"
+              class="dropdown-menu">
+              <slot> </slot>
+          </ul>
+      </div>
+  </script>
   <script type="vue-template" id="view-subject">
       <div class="panel panel-default">
           <div class="panel-heading">
@@ -102,22 +118,49 @@
                           </div>
                           <div class="col-xs-6">
                               <div class="pull-right">
-                                  <a href="javascript:void(0)">
-                                      <span @click="changeSort"
-                                            class="glyphicon"
-                                            :class="asc?'glyphicon-arrow-up':'glyphicon-arrow-down'"
-                                            aria-hidden="true"></span>
-                                  </a>
-                                  <select name="limit" v-model="limit" number>
-                                      <option value=5>5</option>
-                                      <option value=10>10</option>
-                                      <option value=15>15</option>
-                                      <option value=30>30</option>
-                                      <option value=50>50</option>
-                                  </select>
-                                  <a @click="subject.empty()"
-                                     href="javascript:void(0)"
-                                     class="btn btn-default btn-xs">清空</a>
+                                  <m-dropdown>
+                                      <span slot="head">分页</span>
+                                      <li>
+                                          <a href="javascript:void(0)">
+                                              每页显示
+                                              <select name="limit" v-model="limit" number>
+                                                  <option value=5>5</option>
+                                                  <option value=10>10</option>
+                                                  <option value=15>15</option>
+                                                  <option value=30>30</option>
+                                                  <option value=50>50</option>
+                                              </select>
+                                          </a>
+                                      </li>
+                                  </m-dropdown>
+                                  <m-dropdown>
+                                      <span slot="head">显示</span>
+                                      <li v-for="(index, col) in subject.row">
+                                          <a @click="subject.rowSelect(index)" href="javascript:void(0)">
+                                              <input type="checkbox" v-model="col.show"/>
+                                              <span v-text="col.name"></span>
+                                          </a>
+                                      </li>
+                                  </m-dropdown>
+                                  <m-dropdown>
+                                      <span slot="head">排序</span>
+                                      <li>
+                                          <a @click="changeSort" href="javascript:void(0)">
+                                              时间
+                                              <span class="glyphicon"
+                                                    :class="asc?'glyphicon-arrow-up':'glyphicon-arrow-down'"
+                                                    aria-hidden="true"></span>
+                                          </a>
+                                      </li>
+                                  </m-dropdown>
+                                  <m-dropdown>
+                                      <span slot="head">操作</span>
+                                      <li>
+                                          <a @click="subject.empty()" href="javascript:void(0)">
+                                              <span class="btn btn-default btn-xs btn-danger">清空列表</span>
+                                          </a>
+                                      </li>
+                                  </m-dropdown>
                               </div>
                           </div>
                       </div>
@@ -126,21 +169,23 @@
           </div>
           <table class="table table-condensed table-bordered">
               <tr>
-                  <th>内容</th>
-                  <th>时间</th>
-                  <th>操作</th>
+                  <th v-for="col in subject.row" v-if="col.show" v-text="col.name"></th>
               </tr>
               <template v-for="(index, item) in list">
                   <tr>
-                      <td >
-                          <div-edit :content.sync ="item.content" :single="false"></div-edit>
-                      </td>
-                      <td width=170>
-                          <p v-text="item.time"></p>
-                      </td>
-                      <td>
-                          <a @click="subject.del(item)" href="javascript:void(0)" class="btn btn-default">删除</a>
-                      </td>
+                      <template v-for="col in subject.row" v-if="col.show">
+                          <td v-if="col.key == 'content'">
+                              <div-edit :content.sync ="item.content" :single="false"></div-edit>
+                          </td>
+                          <td v-if="col.key == 'time'" width=170>
+                              <p v-text="item.time"></p>
+                          </td>
+                          <td v-if="col.key == 'opt'">
+                              <a @click="subject.del(item)" href="javascript:void(0)" class="btn btn-default">
+                                  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                              </a>
+                          </td>
+                      </template>
                   </tr>
               </template>
           </table>

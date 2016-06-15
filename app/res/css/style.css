@@ -9,6 +9,10 @@ ul.pagination{
     margin: 0;
 }
 
+.dropdown-menu{
+    min-width: auto;
+}
+
 /*layout*/
 .main{
     position: relative;

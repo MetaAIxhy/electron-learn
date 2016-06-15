@@ -15,13 +15,31 @@ class Subject{
         this.name = name;
         this.input = "";
         this.todos = [];
+        this.row = [
+            {
+                key: 'content',
+                name: '内容',
+                show: true
+            },{
+                key: 'time',
+                name: '时间',
+                show: true
+            },{
+                key: 'opt',
+                name: '操作',
+                show: true
+            }],
         this.active = true;
+    }
+    rowSelect(index){
+        this.row[index].show = !this.row[index].show ;
     }
     select(){
         this.active = !this.active;
     }
     update(subject){
         this.active=subject.active;
+        this.row = subject.row;
         subject.todos.map(todo=>this.add(todo.content, todo.time))
     }
     add(text, time){
